@@ -13,6 +13,9 @@ class ListCreateWishlist(generics.ListCreateAPIView):
     serializer_class = WishlistSerializer
     
     def get_queryset(self):
+        #edited the queryset function to extract latest stock information
+        #implemented the functionality to extract data from the stock API in get_stock_data function defined in data.py
+        #and extracting information about every stock in a user's wishlist ( only if user is signed in )
         if(self.request.user.is_authenticated):
             myset = WishList.objects.filter(user=self.request.user)
             for obj in myset:
@@ -29,6 +32,10 @@ class ListCreateWishlist(generics.ListCreateAPIView):
 class RetrieveUpdateWishList(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = WishlistSerializer
     def get_queryset(self):
+        #edited the queryset function to extract latest stock information
+        #implemented the functionality to extract data from the stock API in get_stock_data function defined in data.py
+        #and extracting information about every stock in a user's wishlist ( only if user is signed in )
+
         if(self.request.user.is_authenticated):
             myset = WishList.objects.filter(user=self.request.user)
             for obj in myset:
