@@ -17,12 +17,21 @@ TypeScript (superset of JavaScript for static typing)
 
 pre-requisites :
 
--reactjs.
--django.
--material ui.
--typescript.
--axios.
--react-router-dom.
--corsheaders ( django ).
--rest_framework.
+1.reactjs.
+
+2.django.
+
+3.material ui.
+
+4.typescript.
+
+5.axios.
+
+6.react-router-dom.
+
+7.corsheaders ( django ).
+
+8.rest_framework.
+
+9.python.
  
