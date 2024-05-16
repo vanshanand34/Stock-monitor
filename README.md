@@ -15,14 +15,14 @@ Django (Python web framework for the back-end)
 Material-UI (React component library for Material Design)
 TypeScript (superset of JavaScript for static typing)
 
-'pre-requisites' :
+pre-requisites :
 
-1.reactjs.
-2.django.
-3.material ui.
-4.typescript.
-5.axios.
-6.react-router-dom.
-7.corsheaders ( django ).
-8.rest_framework.
+-reactjs.
+-django.
+-material ui.
+-typescript.
+-axios.
+-react-router-dom.
+-corsheaders ( django ).
+-rest_framework.
  
