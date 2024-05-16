@@ -11,11 +11,15 @@ View current stock prices for items in your wishlist.
 #Technologies Used
 
 React.js (front-end framework)
+
 Django (Python web framework for the back-end)
+
 Material-UI (React component library for Material Design)
+
 TypeScript (superset of JavaScript for static typing)
 
-pre-requisites :
+
+Pre-requisites :
 
 1.reactjs.
 
