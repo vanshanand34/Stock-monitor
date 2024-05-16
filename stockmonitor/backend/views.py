@@ -14,12 +14,13 @@ from .data import get_stock_data
 class RegisterView(View):
     def post(self,request):
         serializer = RegisterSerializer(data = request.data)
+        print(serializer.data)
         if serializer.is_valid():
             serializer.save()
             login(request,username = serializer.username,password = serializer.password)
-            return redirect('wishlistview')
+            return Response({'status':'success'})
         else:
-            return redirect('login')
+            return Response({'status':'faliure'})
 class LoginView(View):
     def post(self,request):
         username = request.POST['username']
@@ -27,9 +28,9 @@ class LoginView(View):
         user = authenticate(request,username=username,password = passwd)
         if user is not None:
             login(request,user)
-            return redirect('wishlistview')
+            return Response({'status':'success'})
         else:
-            return redirect('login')
+            return Response({'status':'failure'})
 
 
 
