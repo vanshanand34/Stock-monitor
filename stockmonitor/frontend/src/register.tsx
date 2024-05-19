@@ -2,7 +2,7 @@ import axios from 'axios';
 import React , { useState } from 'react';
 import { Box ,Typography , TextField , Button } from '@mui/material';
 import { RegistrationForm } from './stock';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const RegisterPage: React.FC = () => {
     const navigate = useNavigate()

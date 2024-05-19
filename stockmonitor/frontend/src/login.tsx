@@ -34,7 +34,7 @@ const LoginPage: React.FC = () => {
         };
     return (
         <div>
-                <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Typography variant="h5" sx={{ mb: 2 }}>
                 Register
             </Typography>

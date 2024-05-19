@@ -8,6 +8,11 @@ from django.contrib.auth.password_validation import validate_password
 class WishlistSerializer(serializers.ModelSerializer):    
     class Meta:
         model = WishList
+        fields = ["symbol","latest_value","change","user"]
+
+class ShowWishlistSerializer(serializers.ModelSerializer):    
+    class Meta:
+        model = WishList
         fields = ["symbol","latest_value","change"]
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -16,7 +21,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(write_only=True,required=True)
     class Meta:
         model = User
-        fields = ('email','username','password','password2','first_name','last_name')
+        fields = ["email","username","password","password2","first_name","last_name"]
         extra_kwargs = {'first_name':{'required':True},'email':{'required':True}}
 
     def validate(self,attrs):
@@ -33,4 +38,5 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
         user.set_password(validated_data['password'])
         user.save()
-        return user
+        print(user)
+        
