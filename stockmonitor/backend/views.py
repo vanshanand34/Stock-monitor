@@ -31,6 +31,7 @@ class LoginView(APIView):
         user = authenticate(request,username=username,password = passwd)
         if user is not None:
             login(request,user)
+            print("Logged in")
             return Response({'status':'success'})
         else:
             return Response({'status':'failure'})
@@ -38,51 +39,42 @@ class LoginView(APIView):
 
 
 
-class ListCreateWishlist(generics.ListCreateAPIView):
-    serializer_class = ShowWishlistSerializer
-    
+class ListCreateWishlist(APIView):
     def post(self,request):
+        print("POSTED REQUEST")
         if request.user.is_authenticated :
             mydata = request.data.copy()
             mydata["user"] = request.user.id
             serializer = WishlistSerializer(data = mydata)
             print(request.data)
             if serializer.is_valid():
+                if WishList.objects.filter(user = request.user,symbol=mydata["symbol"]):
+                    return Response({"status":"failed","Message":"The stock already exists in your wishlist !!!!!"})
                 serializer.save()
-                serializer = ShowWishlistSerializer(self.get_queryset(),many=True)
-                print("q = ",self.get_queryset())
-                return Response({"data":serializer.data})
+                return Response({"Message":"Stock created successfully"})
             else:
                 print(serializer.errors)
-                return Response({"Error" :serializer.errors})
+                return Response({"status":"failed","Error" :serializer.errors})
         else:
-            print("Not authenticated")
-            return None
+            return Response({"status":"failed","Message":"You must be logged in to add stocks to your wishlist!!"})
         
 
-    def get_queryset(self):
-        '''edited the queryset function to extract latest stock information implemented the functionality to extract data from the stock API in get_stock_data function defined in data.py and extracting information about every stock in a user's wishlist ( only if user is signed in )'''
-        if(self.request.user.is_authenticated):
-            print(self.request.user)
-            myset = WishList.objects.filter(user=self.request.user)
-            print("query : ",myset)
+    def get(self,request):
+        '''function to extract latest stock information implemented the functionality to extract data from the stock API in get_stock_data function defined in data.py and extracting information about every stock in a user's wishlist ( only if user is signed in )'''
+        if(request.user.is_authenticated):
+            print(request.user)
+            myset = WishList.objects.filter(user=request.user)
             for obj in myset:
                 data = get_stock_data(obj.symbol)
                 obj.latest_value = data['latest_value']
                 obj.change = data['change']
                 print(obj)
                 obj.save()
-            return myset
+            serializer = ShowWishlistSerializer(myset,many=True)
+            return Response(serializer.data)
         else:
-            myset = WishList.objects.all()
-            print("No",myset)
-            for obj in myset:
-                data = get_stock_data(obj.symbol)
-                obj.latest_value = data['latest_value']
-                obj.change = data['change']
-                print(obj)
-                obj.save()
-            return myset
+            print(request.user)
+            return Response({"status":"failed","Error":"You must be logged in to view/create your stocks wishlist"})
         
 class RetrieveUpdateWishList(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ShowWishlistSerializer
