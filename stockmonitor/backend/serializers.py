@@ -40,3 +40,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.save()
         print(user)
         
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ['id','username','password']
+        extra_kwargs = {'password' : { 'write_only' : True }}
