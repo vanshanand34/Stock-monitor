@@ -6,7 +6,7 @@ import RegisterPage from './register.tsx';
 import LoginPage from './login.tsx';
 import { Table , TableHead , TableCell , TableContainer , TableBody , TableRow} from '@mui/material';
 import {AppBar , Toolbar , Typography , Container , Grid , Card , CardContent} from '@mui/material';
-
+import api from './api.tsx';
 
 const App: React.FC = () => {
   return (
@@ -30,7 +30,7 @@ const HomePage : React.FC = () =>{
     useEffect(()=>{
         const fetchdata = async ()=>{
             try{
-                const response = await axios.get("http://127.0.0.1:8000/stock/");
+                const response = await api.get("http://127.0.0.1:8000/stock/");
                 setStocks(response.data);
             }catch(err){
                 console.log("Error : ",err);

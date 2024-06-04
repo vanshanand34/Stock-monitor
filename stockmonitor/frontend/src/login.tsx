@@ -1,9 +1,9 @@
 import axios from 'axios';
 import React , { useEffect , useState } from 'react';
-import { Box ,Typography , TextField} from '@mui/material';
+import { Box ,Typography , TextField , Button} from '@mui/material';
 import { LoginForm } from './stock';
 import { useNavigate } from 'react-router-dom';
-
+import api from './api.tsx';
 
 const LoginPage: React.FC = () => {
     const navigate = useNavigate()
@@ -18,10 +18,11 @@ const LoginPage: React.FC = () => {
         event.preventDefault(); // Prevent default form submission
             const fetchdata = async ()=>{
                 try{
-                    const response = await axios.post("http://127.0.0.1:8000/stock/login",formData);
+                    const response = await api.post("http://127.0.0.1:8000/stock/login",formData);
                     const data = response.data ;
                     console.log(data);
-                    if(data['status']=='success'){
+                    if(data['token']){
+                        localStorage.setItem('token',data['token'])
                         navigate('/')
                     }else{
                         navigate('/login')
@@ -53,7 +54,15 @@ const LoginPage: React.FC = () => {
                 value={formData.password}
                 onChange={handleChange}
                 ></TextField>
-                </Box>
+            <Button
+            type = "submit"
+            color = "primary"
+            variant = "contained"
+            name="Submit"
+            sx={{ width:'15%' ,mb:2}}>
+            <Typography component="span" display="inline">Submit</Typography>
+            </Button>
+            </Box>
             </div>
     )
     
