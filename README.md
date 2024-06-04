@@ -3,12 +3,16 @@
 An Innovative React and Django-based web application for creating and managing a stock wishlist with basic price information.
 Used a stock API to fetch latest information about stocks and this information is communicated between frontend and backend using API enpoint developed in Django-Rest-Framework.
 
+---
+
 🔗Features
 
 -Add stocks to your wishlist using symbols.
 -Registration of new users.
 -Only logged in users can create stock wishlists.
 -View current stock prices and latest change for items in your wishlist.
+
+---
 
 🔗Technologies Used
 
@@ -20,6 +24,7 @@ Used a stock API to fetch latest information about stocks and this information i
 
 -TypeScript (superset of JavaScript for static typing)
 
+---
 
 🔗Pre-requisites :
 
