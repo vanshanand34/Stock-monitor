@@ -1,14 +1,16 @@
-#Stock Monitor
+🔗Stock Monitor
 
-A React and Django application for creating and managing a stock wishlist with basic price information.
+An Innovative React and Django-based web application for creating and managing a stock wishlist with basic price information.
+Used a stock API to fetch latest information about stocks and this information is communicated between frontend and backend using API enpoint developed in Django-Rest-Framework.
 
-Features
+🔗Features
 
-Add stocks to your wishlist using symbols.
-Registration of new users.
-View current stock prices for items in your wishlist.
+-Add stocks to your wishlist using symbols.
+-Registration of new users.
+-Only logged in users can create stock wishlists.
+-View current stock prices and latest change for items in your wishlist.
 
-#Technologies Used
+🔗Technologies Used
 
 React.js (front-end framework)
 
@@ -19,10 +21,9 @@ Material-UI (React component library for Material Design)
 TypeScript (superset of JavaScript for static typing)
 
 
-Pre-requisites :
+🔗Pre-requisites :
 
 1.reactjs.
-
 2.django.
 
 3.material ui.
