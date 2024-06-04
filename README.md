@@ -12,18 +12,19 @@ Used a stock API to fetch latest information about stocks and this information i
 
 🔗Technologies Used
 
-React.js (front-end framework)
+-React.js (front-end framework)
 
-Django (Python web framework for the back-end)
+-Django (Python web framework for the back-end)
 
-Material-UI (React component library for Material Design)
+-Material-UI (React component library for Material Design)
 
-TypeScript (superset of JavaScript for static typing)
+-TypeScript (superset of JavaScript for static typing)
 
 
 🔗Pre-requisites :
 
 1.reactjs.
+
 2.django.
 
 3.material ui.
