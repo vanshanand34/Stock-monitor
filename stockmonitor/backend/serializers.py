@@ -39,4 +39,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         print(user)
+        return user
         
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ['id','username','password']
+        extra_kwargs = {'password' : { 'write_only' : True }}

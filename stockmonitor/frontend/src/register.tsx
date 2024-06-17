@@ -3,6 +3,7 @@ import React , { useState } from 'react';
 import { Box ,Typography , TextField , Button } from '@mui/material';
 import { RegistrationForm } from './stock';
 import { useNavigate } from 'react-router-dom';
+import api from './api.tsx';
 
 const RegisterPage: React.FC = () => {
     const navigate = useNavigate()
@@ -23,14 +24,14 @@ const RegisterPage: React.FC = () => {
             const fetchdata = async ()=>{
                 try{
                     console.log(formData)
-                    const response = await axios.post("http://127.0.0.1:8000/stock/register",formData);
+                    const response = await api.post("http://127.0.0.1:8000/stock/register",formData);
                     const data = response.data ;
+                    const code = response.status;
+                    console.log(code);
                     console.log(data);
-                    if(data['status']==='success'){
-                        navigate('/')
-                    }else{
-                        navigate('/register')
-                    }
+                    console.log("success : ",data);
+                    // localStorage.setItem('token',data['token'])
+                    navigate('/login');
                 }catch(err){
                     console.log("Error : ",err);
                 }
