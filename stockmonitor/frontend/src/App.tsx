@@ -1,10 +1,10 @@
 import axios from 'axios';
 import React , { useEffect , useState } from 'react';
-import {Stock} from './stock.tsx';
-import {BrowserRouter , Route , Routes} from 'react-router-dom';
+import {Stock , Additem} from './stock.tsx';
+import {BrowserRouter , Navigate, Route , Routes, useNavigate} from 'react-router-dom';
 import RegisterPage from './register.tsx';
 import LoginPage from './login.tsx';
-import { Table , TableHead , TableCell , TableContainer , TableBody , TableRow} from '@mui/material';
+import { Box  , Table , TableHead , TableCell , TableContainer , TableBody , TableRow, TextField, Button} from '@mui/material';
 import {AppBar , Toolbar , Typography , Container , Grid , Card , CardContent} from '@mui/material';
 import api from './api.tsx';
 
@@ -26,7 +26,30 @@ export default App;
 
 
 const HomePage : React.FC = () =>{
+    const navigate = useNavigate();
     const [stocks , setStocks] = useState<Stock[]>([]);
+    const [addStock , setAddStock] = useState<Additem>({
+      symbol:" ",
+    });
+    const handleChange = (event : React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      console.log(event.target.value);
+      setAddStock({symbol:event.target.value });
+    }
+    const handleSubmit = (event : React.FormEvent<HTMLFormElement>) =>{
+      event.preventDefault();
+      const postRequest = async () => {
+        try{
+          console.log("DATA :",addStock);
+          const response = await api.post("http://127.0.0.1:8000/stock/",addStock);
+          const data = response.data;
+          console.log(data);
+          window.location.reload();
+        }catch(err){
+          console.log(err);
+        }
+      }
+      postRequest();
+    }
     useEffect(()=>{
         const fetchdata = async ()=>{
             try{
@@ -45,11 +68,13 @@ const HomePage : React.FC = () =>{
     return (
       <div>
         <AppBar >
-          <Toolbar>
-            <Typography variant="h4" sx={{fontFamily:'Monospace',fontWeight:'bold',letterSpacing:2}}>Stock Wishlist dashboard</Typography>
-          </Toolbar>
+            <Box component="form" onSubmit={handleSubmit} sx={{display:"flex" ,p:1,alignItems:'center'}}>
+            <Typography variant="h4" sx={{mr:52,fontFamily:'Monospace',fontWeight:'bold',letterSpacing:2}}>Stock Wishlist dashboard</Typography>
+            <TextField sx={{backgroundColor:'white',mr:2}} name="symbol" value={addStock.symbol} onChange={handleChange} label="Add Stock" type='text'/>
+            <Button type="submit" color='success' variant='outlined' sx={{backgroundColor:"white",width:'10vw'}} name='submit'><Typography variant='h6' component="span" display="inline">Submit</Typography> </Button>
+            </Box>
         </AppBar>
-        <Container sx={{mt:12}}>
+        <Container sx={{m:12}}>
           <Grid container spacing={6}>{stocks.map(stock=>(
             <Grid item xs={12} sm={12} md={12} key={stock.symbol}>
               <Card sx={{borderRadius:'10px',border:1,borderColor:"grey.500",boxShadow:3}}>
@@ -57,7 +82,7 @@ const HomePage : React.FC = () =>{
                   <Typography variant="h5" component="h2">{stock.symbol}</Typography>
                   <Typography sx={{color:"primary.main",}} variant="h5">Latest Price : ${stock.latest_value}</Typography>
                   <Typography color="textSecondary" variant="h5">Change : {stock.change} 
-                    <Typography component="span" variant="h3" display={"inline"} sx={{color:"primary.main",mx:2}}>
+                    <Typography component="span" variant="h4" display={"inline"} sx={{color:"primary.main",mx:2}}>
                           {(parseFloat(stock.change)>0)?(String.fromCharCode(8593)):String.fromCharCode(8595)}
                     </Typography>
                   </Typography>
