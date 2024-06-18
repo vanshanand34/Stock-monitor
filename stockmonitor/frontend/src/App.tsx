@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React , { useEffect , useState } from 'react';
 import {Stock , Additem} from './stock.tsx';
 import {BrowserRouter , Navigate, Route , Routes, useNavigate} from 'react-router-dom';
@@ -22,9 +21,6 @@ const App: React.FC = () => {
 
 export default App;
 
-
-
-
 const HomePage : React.FC = () =>{
     const navigate = useNavigate();
     const [stocks , setStocks] = useState<Stock[]>([]);
@@ -43,7 +39,7 @@ const HomePage : React.FC = () =>{
           const response = await api.post("http://127.0.0.1:8000/stock/",addStock);
           const data = response.data;
           console.log(data);
-          window.location.reload();
+          window.location.reload(); //to refresh the page to reflect addition of new stock in wishlist
         }catch(err){
           console.log(err);
         }
@@ -62,22 +58,22 @@ const HomePage : React.FC = () =>{
         fetchdata();
     },[]);
     
-    // function myarrow(number){
-    //   if(arrow>0)
-    // }
     return (
       <div>
         <AppBar >
-            <Box component="form" onSubmit={handleSubmit} sx={{display:"flex" ,p:1,alignItems:'center'}}>
-            <Typography variant="h4" sx={{mr:52,fontFamily:'Monospace',fontWeight:'bold',letterSpacing:2}}>Stock Wishlist dashboard</Typography>
-            <TextField sx={{backgroundColor:'white',mr:2}} name="symbol" value={addStock.symbol} onChange={handleChange} label="Add Stock" type='text'/>
-            <Button type="submit" color='success' variant='outlined' sx={{backgroundColor:"white",width:'10vw'}} name='submit'><Typography variant='h6' component="span" display="inline">Submit</Typography> </Button>
+            <Box  sx={{display:"flex" ,p:1,alignItems:'center',flexWrap:'wrap'}}>
+              <Typography variant="h4" sx={{mr:'30vw' ,fontFamily:'Monospace',fontWeight:'bold',letterSpacing:2,fontSize:'1.6rem'}}>Stock Wishlist dashboard</Typography>
+              <Box component="form" onSubmit={handleSubmit} sx={{display:"flex" , alignItems:'center'}}>
+                <TextField size='small' id="filled-basic" variant='filled' sx={{backgroundColor:"white",mr:'4vw'}} label='Add Stock...' name="symbol" value={addStock.symbol} onChange={handleChange} type='text'/>
+                <Button type="submit" color='success' variant='outlined' sx={{backgroundColor:"white"}} name='submit'><Typography variant='h6' component="span" display="inline">Submit</Typography> </Button>
+              </Box>
             </Box>
         </AppBar>
-        <Container sx={{m:12}}>
-          <Grid container spacing={6}>{stocks.map(stock=>(
-            <Grid item xs={12} sm={12} md={12} key={stock.symbol}>
-              <Card sx={{borderRadius:'10px',border:1,borderColor:"grey.500",boxShadow:3}}>
+        <Container sx={{my:12}}>
+          <Grid container spacing={4}>{stocks.map(stock=>(
+            <Grid item xs={8} sm={10} md={8} lg={10} key={stock.symbol} sx={{margin:'auto'}} >
+              <Card 
+              sx={{borderRadius:'10px',border:1,borderColor:"grey.500",boxShadow:3}}>
                 <CardContent>
                   <Typography variant="h5" component="h2">{stock.symbol}</Typography>
                   <Typography sx={{color:"primary.main",}} variant="h5">Latest Price : ${stock.latest_value}</Typography>
@@ -95,50 +91,3 @@ const HomePage : React.FC = () =>{
       </div>
     )
 }
-
-
-
-// knfsdnx
-// sdv zs sdf
-// /* <h1>My Stock Wishlist</h1>
-      // <table>
-      //   <thead>
-      //     <tr>
-      //       <td>Symbol</td>
-      //       <td>Latest Price</td>
-      //       <td>Change</td>
-      //     </tr>
-      //   </thead>
-      //   <tbody>
-      //     {stocks.map((arr)=>(
-      //       <tr key={arr.symbol}>
-      //         <td>{arr.symbol}</td>
-      //         <td>{arr.latest_value}</td>
-      //         <td>{arr.change}</td>
-      //       </tr>
-      //     ))}
-      //   </tbody>
-      // </table> */
-      // /* <TableContainer sx={{width:'100%'}}>
-      //   <Table>
-      //     <TableHead>
-      //       <TableRow>
-      //       <TableCell>Symbol</TableCell>
-      //       <TableCell align="right">Latest PRice</TableCell>
-      //       <TableCell align="right">change</TableCell>
-      //       </TableRow>
-      //     </TableHead>
-      //     <TableBody>
-      //     {stocks.map((arr)=>(
-      //       <TableRow key={arr.symbol}>
-      //         <TableCell>{arr.symbol}</TableCell>
-      //         <TableCell align="right">{arr.latest_value}</TableCell>
-      //         <TableCell align="right">{arr.change}</TableCell>
-      //       </TableRow>
-      //     ))}
-      //     </TableBody>
-      //   </Table>
-      // </TableContainer> */
-
-      
-      
