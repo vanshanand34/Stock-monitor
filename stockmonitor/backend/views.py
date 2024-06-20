@@ -20,6 +20,14 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     queryset = User.objects.all()
     
+# class Logout(APIView):
+#     def get(self,request):
+#         if request.user.is_authenticated():
+#             logout(request)
+#             return Response({"status":"user loggout out successfully"})
+#         else:
+#             return Response({"Message":"You must be signed in to log out"})
+
 class Login(APIView):
     def post(self,request):
         username = request.data['username']
@@ -33,11 +41,10 @@ class Login(APIView):
     
 class Logout(APIView):
     def get(self,request):
-        if request.user.is_authenticated():
-            logout(request.user)
-            token , _ = Token.objects.delete(user = request.user)
-            return Response({"Logged out successfully!!!!1"})
-        return Response({"You need to be logged in first to logout"})
+        if request.user.is_authenticated:
+            logout(request)
+            return Response({"status":"user loggout out successfully"})
+        return Response({"Message":"You must be signed in to log out"})
 
 
 
@@ -54,7 +61,7 @@ class ListCreateWishlist(generics.ListCreateAPIView):
         serializer = WishlistSerializer(data = mydata)
         print(request.data)
         if serializer.is_valid():
-            if WishList.objects.filter(user = request.user,symbol=mydata["symbol"]):
+            if WishList.objects.filter(user = request.user,symbol=mydata["symbol"]) is not None:
                 return Response({"status":"failed","Message":"The stock already exists in your wishlist !!!!!"})
             serializer.save()
             print(serializer.data)

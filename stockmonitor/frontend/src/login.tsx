@@ -22,7 +22,8 @@ const LoginPage: React.FC = () => {
                     const data = response.data ;
                     console.log(data);
                     if(data['token']){
-                        localStorage.setItem('token',data['token'])
+                        localStorage.setItem('token',data['token']);
+                        localStorage.setItem('authenticated',"true");
                         navigate('/')
                     }else{
                         navigate('/login')
@@ -37,7 +38,7 @@ const LoginPage: React.FC = () => {
         <div>
             <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Typography variant="h5" sx={{ mb: 2 }}>
-                Register
+                Login
             </Typography>
             <TextField
                 label="username"

@@ -22,3 +22,7 @@ export interface LoginForm{
 export interface Additem{
     symbol:string
 }
+
+export interface Heading{
+    heading:string
+}
