@@ -27,6 +27,7 @@ const LoginPage: React.FC = () => {
                         navigate('/')
                     }else{
                         navigate('/login')
+                        localStorage.setItem('authenticated','false');
                     }
                 }catch(err){
                     console.log("Error : ",err);
@@ -46,7 +47,7 @@ const LoginPage: React.FC = () => {
                 type="text"
                 value={formData.username}
                 onChange={handleChange}
-                sx={{ width: '100%', mb: 2 }}
+                sx={{mb:4}}
             />
             <TextField
                 label="Password"
@@ -60,7 +61,7 @@ const LoginPage: React.FC = () => {
             color = "primary"
             variant = "contained"
             name="Submit"
-            sx={{ width:'15%' ,mb:2}}>
+            sx={{ width:'15%' ,mt:12}}>
             <Typography component="span" display="inline">Submit</Typography>
             </Button>
             </Box>
