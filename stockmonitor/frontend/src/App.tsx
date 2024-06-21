@@ -1,4 +1,5 @@
 import React , { useEffect , useState } from 'react';
+import LoginButton from './LoginButton.tsx';
 import {Stock , Additem} from './stock.tsx';
 import {BrowserRouter , Navigate, Route , Routes, useNavigate} from 'react-router-dom';
 import RegisterPage from './register.tsx';
@@ -23,10 +24,6 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
-
-
-
 
 const HomePage : React.FC = () =>{
   let theme = createTheme();
@@ -50,7 +47,9 @@ const HomePage : React.FC = () =>{
           console.log(data);
           window.location.reload(); //to refresh the page to reflect addition of new stock in wishlist
         }catch(err){
-          
+          if(localStorage.getItem('message')){
+            localStorage.setItem('message','Stock is already in your wishlist');
+          }
           console.log(err);
         }
       }
@@ -62,12 +61,7 @@ const HomePage : React.FC = () =>{
                 const response = await api.get("http://127.0.0.1:8000/stock/");
                 setStocks(response.data);
             }catch(err){
-              setStocks([{
-                symbol:"You must be logged in to view/create Stock wishlists",
-                latest_value:"-",
-                change:"-",
-              }])
-              console.log(stocks);
+              localStorage.setItem("authenticated","false");
               console.log("Error : ",err);
             }
         }
@@ -76,16 +70,17 @@ const HomePage : React.FC = () =>{
     
     return (
       <div>
+        <LoginButton />
         <AppBar >
-            <Box  sx={{display:"flex" ,p:1,alignItems:'center',flexWrap:'wrap'}}>
+            <Box  sx={{display:"flex" ,p:1,alignItems:'center',flexWrap:'wrap',justifyContent:'space-between'}}>
               <ThemeProvider theme={theme}>
-              <Typography variant="h4" sx={{mr:'30vw' ,fontFamily:'Monospace',fontWeight:'bold',letterSpacing:2}}>Stock Wishlist dashboard</Typography>
+              <Typography variant="h5" sx={{fontFamily:'Monospace',fontWeight:'bold',letterSpacing:2}}>Stock Wishlist dashboard</Typography>
               </ThemeProvider>
-              <Box component="form" onSubmit={handleSubmit} sx={{display:"flex" , alignItems:'center'}}>
-                <TextField size='small' id="filled-basic" variant='filled' sx={{backgroundColor:"white",mr:'4vw'}} label='Add Stock...' name="symbol" value={addStock.symbol} onChange={handleChange} type='text'/>
-                <Button type="submit" color='success' variant='outlined' sx={{backgroundColor:"white"}} name='submit'>
+              <Box component="form"  onSubmit={handleSubmit} sx={{display:"flex" , alignItems:'center',padding:"4px 4px"}}>
+                <TextField size='small' id="filled-basic" variant='filled' sx={{backgroundColor:"white"}} label='Add Stock...' name="symbol" value={addStock.symbol} onChange={handleChange} type='text'/>
+                <Button type="submit" color="success" variant='outlined' sx={{backgroundColor:"white",margin:'0 12px'}} name='submit'>
                   <ThemeProvider theme={theme}>
-                    <Typography sx={{fontSize:"calc(1rem+1vw)"}} variant='h5' component="span" display="inline">Submit</Typography>
+                    <Typography sx={{fontSize:"calc(0.6rem+0.5vw)"}} component="span" display="inline">Submit</Typography>
                   </ThemeProvider>
                 </Button>
               </Box>
@@ -113,3 +108,5 @@ const HomePage : React.FC = () =>{
       </div>
     )
 }
+
+export default App;
