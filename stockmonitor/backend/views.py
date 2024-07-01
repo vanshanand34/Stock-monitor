@@ -66,6 +66,7 @@ class ListCreateWishlist(generics.ListCreateAPIView):
         serializer = WishlistSerializer(data = mydata)
         print(request.data)
         if serializer.is_valid():
+            print(WishList.objects.filter(user = request.user,symbol=mydata["symbol"]).count())
             if WishList.objects.filter(user = request.user,symbol=mydata["symbol"]).count()>=1:
                 return Response({"status":"failed","Message":"The stock already exists in your wishlist !!!!!"})
             serializer.save()
@@ -76,8 +77,6 @@ class ListCreateWishlist(generics.ListCreateAPIView):
             return Response({"status":"failed","Error" :serializer.errors})
         
     def get_queryset(self):
-        WishList.objects.all().delete()
-        print(WishList.objects.all())
         '''function to extract latest stock information implemented the functionality to extract data from the stock API in get_stock_data function defined in data.py and extracting information about every stock in a user's wishlist ( only if user is signed in )'''
         print(self.request.user)
         myset = WishList.objects.filter(user=self.request.user)
