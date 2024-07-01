@@ -7,42 +7,32 @@ Used a stock API to fetch latest information about stocks and this information i
 
 # Features
 
--Add stocks to your wishlist using symbols
--Registration of new users
--Only logged in users can create stock wishlists
--View current stock prices and latest change for items in your wishlist
+- Add stocks to your wishlist using symbols
+- Registration of new users
+- Only logged in users can create stock wishlists
+- View current stock prices and latest change for items in your wishlist
 
 ---
 
 # Technologies Used
 
--React.js (front-end framework)
-
--Django (Python web framework for the back-end)
-
--Material-UI (React component library for Material Design)
-
--TypeScript (superset of JavaScript for static typing)
+- React.js (front-end framework)
+- Django (Python web framework for the back-end)
+- DRF (Django-Rest-Framework , For creating REST API)
+- Material-UI (React component library for Material Design)
+- TypeScript (superset of JavaScript for static typing)
 
 ---
 
 # Pre-requisites :
 
-1.reactjs
-
-2.django
-
-3.material ui
-
-4.typescript
-
-5.axios
-
-6.react-router-dom
-
-7.corsheaders ( django )
-
-8.rest_framework
-
-9.python
+1. Reactjs
+2. Django
+3. Material UI
+4. Typescript
+5. Axios
+6. React-router-dom
+7. Corsheaders ( django )
+8. Django-Rest-Framework
+9. Python
  
