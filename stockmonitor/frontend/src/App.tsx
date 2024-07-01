@@ -31,7 +31,7 @@ const HomePage : React.FC = () =>{
     const navigate = useNavigate();
     const [stocks , setStocks] = useState<Stock[]>([]);
     const [addStock , setAddStock] = useState<Additem>({
-      symbol:" ",
+      symbol:"",
     });
     const handleChange = (event : React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       console.log(event.target.value);
