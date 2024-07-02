@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate , useNavigate } from "react-router-dom";
 import { Box , Typography , Button } from "@mui/material";
-
+import DisplayMessage from "./Message";
 
 
 const LoginButton : React.FC = ()=> {
@@ -14,7 +14,7 @@ const LoginButton : React.FC = ()=> {
       return(
         <Box>
         <Box display='flex' alignItems="center" justifyContent="center" margin="20vh 0">
-          <Typography variant="h5" color="primary" >You MUST be logged in to view/create Wishlists</Typography>
+          <Typography variant="h5" color="primary" >You must be logged in to view/create Wishlists</Typography>
         </Box>
           <Box component="form" onSubmit={navigateToLogin} display="flex" alignItems="center" justifyContent="center">
             <Button
@@ -28,7 +28,16 @@ const LoginButton : React.FC = ()=> {
           </Box>
         </Box>);
     }else{
-      return (<div></div>);
+      const message = localStorage.getItem("message")
+      if(message!=""){
+        return (
+            <Box display='flex' alignItems="center" justifyContent="center" margin="20vh 0">
+                <Typography variant="h5" color="primary" >{message}</Typography>
+            </Box>
+        );
+      }else{
+          return (<></>);
+      }
     }
   }
 

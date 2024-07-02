@@ -62,6 +62,7 @@ class ListCreateWishlist(generics.ListCreateAPIView):
     def post(self,request):
         print("POSTED REQUEST")
         mydata = request.data.copy()
+        mydata["symbol"] = (mydata["symbol"]).strip()
         mydata["user"] = request.user.id
         serializer = WishlistSerializer(data = mydata)
         print(request.data)
