@@ -31,16 +31,16 @@ const LogoutPage : React.FC = ()=> {
         logout();
     }
     if(localStorage.getItem('authenticated')==='false'){
-        return (
-        <Box display='flex' alignItems="center" justifyContent="center" sx={{margin:'12px 22px 44px'}}>
-            <Typography variant="h3">You must be Logged in to log out</Typography>
-        </Box>);
+        return (<></>);
+        // <Box display='flex' alignItems="center" justifyContent="center" sx={{margin:'12px 22px 44px'}}>
+        //     <Typography variant="h3">You must be Logged in to log out</Typography>
+        // </Box>);
     }else{
         return (
         <Box>
-            <Box display='flex' alignItems="center" justifyContent="center" sx={{margin:'12px 22px 44px'}}>
+            {/* <Box display='flex' alignItems="center" justifyContent="center" sx={{margin:'12px 22px 44px'}}>
                 <Typography variant="h3">Logout</Typography>
-            </Box>
+            </Box> */}
             <Box component="form" onSubmit={handleClick} display='flex' alignItems="center" justifyContent="center">
                 <Button type='submit' color="primary" variant="contained">Logout</Button>
             </Box>
