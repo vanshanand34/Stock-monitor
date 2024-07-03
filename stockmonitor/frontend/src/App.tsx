@@ -1,6 +1,5 @@
 import React , { useEffect , useState } from 'react';
 import LoginButton from './LoginButton.tsx';
-import DisplayMessage from './Message.tsx';
 import {Stock , Additem} from './stock.tsx';
 import {BrowserRouter , Navigate, Route , Routes, useNavigate} from 'react-router-dom';
 import RegisterPage from './register.tsx';
@@ -11,7 +10,7 @@ import {AppBar , Toolbar , Typography , Container , Grid , Card , CardContent} f
 import api from './api.tsx';
 import {createTheme} from '@mui/material';
 import {responsiveFontSizes} from '@mui/material';
-
+import LogoutButton from './LogoutButton.tsx';
 const App: React.FC = () => {
   return (
     <BrowserRouter>
@@ -61,6 +60,9 @@ const HomePage : React.FC = () =>{
       }
       postRequest();
     }
+
+    //adding logout button's functionality
+      
     useEffect(()=>{
         const fetchdata = async ()=>{
             try{
@@ -86,12 +88,13 @@ const HomePage : React.FC = () =>{
               </ThemeProvider>
               <Box component="form"  onSubmit={handleSubmit} sx={{display:"flex" , alignItems:'center',padding:"4px 4px"}}>
                 <TextField size='small' id="filled-basic" variant='filled' sx={{backgroundColor:"white"}} label='Add Stock...' name="symbol" value={addStock.symbol} onChange={handleChange} type='text'/>
-                <Button type="submit" color="success" variant='outlined' sx={{backgroundColor:"white",margin:'0 12px'}} name='submit'>
-                  <ThemeProvider theme={theme}>
+                <Button type="submit" color="success"  variant="contained" sx={{margin:'0 12px'}} name='submit'>Submit
+                  {/* <ThemeProvider theme={theme}>
                     <Typography sx={{fontSize:"calc(0.6rem+0.5vw)"}} component="span" display="inline">Submit</Typography>
-                  </ThemeProvider>
+                  </ThemeProvider> */}
                 </Button>
               </Box>
+              <LogoutButton />
             </Box>
         </AppBar>
         <Container sx={{my:'15rem'}}>

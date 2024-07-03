@@ -20,6 +20,7 @@ const LoginButton : React.FC = ()=> {
             <Button
               type = "submit"
               color = "primary"
+              title = "Logout"
               variant = "contained"
               name="Submit"
               sx={{}}>
