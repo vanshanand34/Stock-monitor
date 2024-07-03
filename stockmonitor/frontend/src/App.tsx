@@ -1,5 +1,6 @@
 import React , { useEffect , useState } from 'react';
 import LoginButton from './LoginButton.tsx';
+import DisplayMessage from './Message.tsx';
 import {Stock , Additem} from './stock.tsx';
 import {BrowserRouter , Navigate, Route , Routes, useNavigate} from 'react-router-dom';
 import RegisterPage from './register.tsx';
@@ -31,7 +32,7 @@ const HomePage : React.FC = () =>{
     const navigate = useNavigate();
     const [stocks , setStocks] = useState<Stock[]>([]);
     const [addStock , setAddStock] = useState<Additem>({
-      symbol:"",
+      symbol:" ",
     });
     const handleChange = (event : React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       console.log(event.target.value);
@@ -44,12 +45,17 @@ const HomePage : React.FC = () =>{
           console.log("DATA :",addStock);
           const response = await api.post("http://127.0.0.1:8000/stock/",addStock);
           const data = response.data;
-          console.log(data);
-          window.location.reload(); //to refresh the page to reflect addition of new stock in wishlist
-        }catch(err){
-          if(localStorage.getItem('message')){
+          if(data['status']=='failed'){
             localStorage.setItem('message','Stock is already in your wishlist');
+            window.location.reload(); //to refresh the page to reflect addition of new stock in wishlist
+
+          }else{
+            console.log(data);
+            localStorage.setItem('message','');
+            window.location.reload(); //to refresh the page to reflect addition of new stock in wishlist
           }
+        }catch(err){
+          localStorage.setItem('message','Stock is already in your wishlist');
           console.log(err);
         }
       }
@@ -60,6 +66,8 @@ const HomePage : React.FC = () =>{
             try{
                 const response = await api.get("http://127.0.0.1:8000/stock/");
                 setStocks(response.data);
+                localStorage.setItem("authenticated","true");
+                localStorage.setItem('message','');
             }catch(err){
               localStorage.setItem("authenticated","false");
               console.log("Error : ",err);
