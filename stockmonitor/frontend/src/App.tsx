@@ -8,8 +8,9 @@ import LogoutPage from './Logout.tsx';
 import { Box  , Table , TableHead , TableCell , TableContainer , TableBody , TableRow, TextField, Button, ThemeProvider} from '@mui/material';
 import {AppBar , Toolbar , Typography , Container , Grid , Card , CardContent} from '@mui/material';
 import api from './api.tsx';
-import {createTheme} from '@mui/material';
-import {responsiveFontSizes} from '@mui/material';
+import {createTheme , responsiveFontSizes} from '@mui/material';
+import DeleteIcon  from '@mui/icons-material/Delete' ;
+import IconButton from '@mui/material/IconButton';
 import LogoutButton from './LogoutButton.tsx';
 const App: React.FC = () => {
   return (
@@ -109,6 +110,17 @@ const HomePage : React.FC = () =>{
                     <Typography component="span" variant="h4" display={"inline"} sx={{color:"primary.main",mx:2}}>
                           {(parseFloat(stock.change)>0)?(String.fromCharCode(8593)):String.fromCharCode(8595)}
                     </Typography>
+                    <Box component="form" display={"inline"}
+                      onSubmit={ async ( event : React.FormEvent<HTMLFormElement>) => {
+                          event.preventDefault();
+                          const response = await api.post("http://127.0.0.1:8000/stock/delete",{"symbol":stock.symbol});
+                          console.log(response);
+                          window.location.reload();
+                      }}>
+                      <Button type="submit" >
+                        <DeleteIcon color='error' />
+                      </Button>
+                    </Box>
                   </Typography>
                 </CardContent>
               </Card>

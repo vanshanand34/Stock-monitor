@@ -44,11 +44,14 @@ class DeleteStock(APIView):
     authentication_classes = [TokenAuthentication]
 
     def post(self,request):
-        mysymbol = request.POST["symbol"]
-        obj = WishList.objects.get(user=request.user , symbol=mysymbol)
-        if obj:
-            obj.delete()
-            return Response({"Stock deleted successfully"})
+        mysymbol = request.data["symbol"]
+        if mysymbol :
+            obj = WishList.objects.get(user=request.user , symbol=mysymbol)
+            if obj:
+                obj.delete()
+                print("Stock deleted successfully")
+                return Response({"Stock deleted successfully"})
+            return Response({"stock does not exists"})
         return Response({"stock does not exists"})
             
 
