@@ -10,7 +10,6 @@ import {AppBar , Toolbar , Typography , Container , Grid , Card , CardContent} f
 import api from './api.tsx';
 import {createTheme , responsiveFontSizes} from '@mui/material';
 import DeleteIcon  from '@mui/icons-material/Delete' ;
-import IconButton from '@mui/material/IconButton';
 import LogoutButton from './LogoutButton.tsx';
 const App: React.FC = () => {
   return (
@@ -104,23 +103,24 @@ const HomePage : React.FC = () =>{
               <Card 
               sx={{borderRadius:'10px',border:1,borderColor:"grey.500",boxShadow:3}}>
                 <CardContent>
-                  <Typography variant="h5" component="h2">{stock.symbol}</Typography>
-                  <Typography sx={{color:"primary.main",}} variant="h5">Latest Price : ${stock.latest_value}</Typography>
-                  <Typography color="textSecondary" variant="h5">Change : {stock.change} 
-                    <Typography component="span" variant="h4" display={"inline"} sx={{color:"primary.main",mx:2}}>
-                          {(parseFloat(stock.change)>0)?(String.fromCharCode(8593)):String.fromCharCode(8595)}
-                    </Typography>
-                    <Box component="form" display={"inline"}
+                  <Box component="form" display={"flex"} justifyContent={"space-between"}
                       onSubmit={ async ( event : React.FormEvent<HTMLFormElement>) => {
                           event.preventDefault();
                           const response = await api.post("http://127.0.0.1:8000/stock/delete",{"symbol":stock.symbol});
                           console.log(response);
                           window.location.reload();
                       }}>
-                      <Button type="submit" >
+                      <Typography variant="h5" component="h2" display={"inline"} >{stock.symbol}</Typography>
+                      <Button type="submit"  sx={{marginLeft:"40vw"}}>
                         <DeleteIcon color='error' />
                       </Button>
                     </Box>
+                  <Typography sx={{color:"primary.main",}} variant="h5">Latest Price : ${stock.latest_value}</Typography>
+                  <Typography color="textSecondary" variant="h5">Change : {stock.change} 
+                    <Typography component="span" variant="h4" display={"inline"} sx={{color:"primary.main",mx:2}}>
+                          {(parseFloat(stock.change)>0)?(String.fromCharCode(8593)):String.fromCharCode(8595)}
+                    </Typography>
+                    
                   </Typography>
                 </CardContent>
               </Card>
