@@ -1,60 +1,69 @@
-from django.shortcuts import render
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import TokenAuthentication
-from django.views.generic import View
-from django.shortcuts import redirect
+from rest_framework.authentication import TokenAuthentication, BasicAuthentication
 from rest_framework.response import Response
-from django.contrib.auth import authenticate , login , logout 
-from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 
-from .serializers import WishlistSerializer , RegisterSerializer , ShowWishlistSerializer , UserSerializer
+from .serializers import (
+    WishlistSerializer,
+    RegisterSerializer,
+    ShowWishlistSerializer,
+)
 from .models import WishList
+from .utils import update_stock_data
 
-from .data import get_stock_data
-# Create your views here.
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     queryset = User.objects.all()
-    
+
 
 class Login(APIView):
-    def post(self,request):
-        username = request.data['username']
-        password = request.data['password']
-        user = authenticate(request,username=username,password=password)
-        if user is not None:
-            login(request,user)
-            token , _= Token.objects.get_or_create(user = request.user)
-            return Response({"message":"User loggedin successfully","token":token.key})
-        return Response({"Invalid credentials!!!!!!"})
-    
+    def post(self, request):
+        try:
+            username = request.data.get("username")
+            password = request.data.get("password")
+            user = authenticate(request, username=username, password=password)
+            if user:
+                login(request, user)
+                token, _ = Token.objects.get_or_create(user=request.user)
+                return Response(
+                    {"message": "User loggedin successfully", "token": token.key}
+                )
+            return Response({"Invalid credentials!!!!!!"})
+        except Exception as e:
+            print("Some error occured, :", e)
+            return Response({"message":"Serve Error"})
+
+
 class Logout(APIView):
-    def get(self,request):
-        if request.user.is_authenticated:
-            logout(request)
-            return Response({"status":"user loggout out successfully"})
-        return Response({"Message":"You must be signed in to log out"})
+    authentication_classes = [BasicAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        logout(request, request.user)
+        return Response({"status": 200, "message": "Logged out successfully"})
+
 
 class DeleteStock(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
 
-    def post(self,request):
-        mysymbol = request.data["symbol"]
-        if mysymbol :
-            obj = WishList.objects.get(user=request.user , symbol=mysymbol)
-            if obj:
-                obj.delete()
-                print("Stock deleted successfully")
-                return Response({"Stock deleted successfully"})
+    def post(self, request):
+        mysymbol = request.data.get("symbol")
+        if not mysymbol:
+            return Response({"status":400, "error":"Invalid or empty stock symbol"})
+        obj = WishList.objects.filter(user=request.user, symbol=mysymbol).first()
+        if not obj:
             return Response({"stock does not exists"})
-        return Response({"stock does not exists"})
-            
-
+        obj.delete()
+        print("Stock deleted successfully")
+        return Response({"Stock deleted successfully"})
+        
 
 
 class ListCreateWishlist(generics.ListCreateAPIView):
@@ -62,55 +71,37 @@ class ListCreateWishlist(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
 
-    def post(self,request):
-        print("POSTED REQUEST")
-        mydata = request.data.copy()
-        mydata["symbol"] = (mydata["symbol"]).strip()
-        mydata["user"] = request.user.id
-        serializer = WishlistSerializer(data = mydata)
-        print(request.data)
+    def post(self, request):
+        request_data = request.data.copy()
+        symbol = request.data.get("symbol")
+        if not symbol:
+            return Response({"status":400,"error":"symbol field is required"})
+        request_data["symbol"] = symbol.strip()
+        request_data["user"] = request.user.id
+        serializer = WishlistSerializer(data=request_data)
         if serializer.is_valid():
-            print(WishList.objects.filter(user = request.user,symbol=mydata["symbol"]).count())
-            if WishList.objects.filter(user = request.user,symbol=mydata["symbol"]).count()>=1:
-                return Response({"status":"failed","Message":"The stock already exists in your wishlist !!!!!"})
+            wishlist_count = WishList.objects.filter(
+                user=request.user,
+                symbol=request_data['symbol']
+            )
+            print(wishlist_count)
+            if (wishlist_count):
+                return Response({
+                    "status": "failed",
+                    "Message": "The stock already exists in your wishlist !!!!!",
+                })
             serializer.save()
             print(serializer.data)
-            return Response({"Message":"Stock created successfully"})
+            return Response({"status":200,"message": "Stock created successfully","data":serializer.data})
         else:
             print(serializer.errors)
-            return Response({"status":"failed","Error" :serializer.errors})
-        
-    def get_queryset(self):
-        '''function to extract latest stock information implemented the functionality to extract data from the stock API in get_stock_data function defined in data.py and extracting information about every stock in a user's wishlist ( only if user is signed in )'''
-        print(self.request.user)
-        myset = WishList.objects.filter(user=self.request.user)
-        for obj in myset:
-            data = get_stock_data(obj.symbol)
-            obj.latest_value = data['latest_value']
-            obj.change = data['change']
-            print(obj)
-            obj.save()
-        return myset
-        
-# class RetrieveUpdateWishList(generics.RetrieveUpdateDestroyAPIView):
-#     serializer_class = ShowWishlistSerializer
-#     permission_classes = [IsAuthenticated]
-#     authentication_classes = [TokenAuthentication]
-#     def get_queryset(self,request):
-#         '''edited the queryset function to extract latest stock information
-#         implemented the functionality to extract data from the stock API in get_stock_data function defined in data.py
-#         and extracting information about every stock in a user's wishlist ( only if user is signed in )'''
+            return Response({"status": 400, "error": serializer.errors})
 
-#         if(request.user.is_authenticated):
-#             myset = WishList.objects.filter(user=request.user)
-#             for obj in myset:
-#                 print("symbol = ",obj.symbol)
-#                 data = get_stock_data(obj.symbol)
-#                 obj.latest_value = data['latest_value']
-#                 obj.change = data['change']
-#                 print(obj)
-#                 obj.save()
-#             return myset
-#         else:
-#             print("No")
-#             return None
+    def get_queryset(self):
+        """function to extract latest stock information"""
+        print(self.request.user)
+        update_stock_data(self.request.user)
+        queryset = WishList.objects.filter(user=self.request.user)
+        return queryset
+
+
