@@ -4,11 +4,21 @@ from django.contrib.auth.models import User
 from django.db import models
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
+from .data import get_stock_data
 
 class WishlistSerializer(serializers.ModelSerializer):    
+
+    def create(self, validate_data):
+        response = get_stock_data(validate_data.get("symbol"))
+        validate_data['latest_value'] = response.get("latest_value")
+        validate_data['change'] = response.get("change")
+        return super().create(validate_data)
+
     class Meta:
         model = WishList
         fields = ["symbol","latest_value","change","user"]
+
+
 
 class ShowWishlistSerializer(serializers.ModelSerializer):    
     class Meta:
