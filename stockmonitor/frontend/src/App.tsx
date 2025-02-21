@@ -1,16 +1,23 @@
-import React , { useEffect , useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
+
+import { Box, TextField, Button, ThemeProvider } from '@mui/material';
+import { AppBar, Typography, Container, Grid, Card, CardContent } from '@mui/material';
+import { createTheme, responsiveFontSizes } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+// import ShowChartIcon from '@mui/icons-material/ShowChart';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+// import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+
 import LoginButton from './LoginButton.tsx';
-import {Stock , Additem} from './stock.tsx';
-import {BrowserRouter , Navigate, Route , Routes, useNavigate} from 'react-router-dom';
+import api from './api.tsx';
+import { Stock, Additem } from './stock.tsx';
 import RegisterPage from './register.tsx';
 import LoginPage from './login.tsx';
 import LogoutPage from './Logout.tsx';
-import { Box  , Table , TableHead , TableCell , TableContainer , TableBody , TableRow, TextField, Button, ThemeProvider} from '@mui/material';
-import {AppBar , Toolbar , Typography , Container , Grid , Card , CardContent} from '@mui/material';
-import api from './api.tsx';
-import {createTheme , responsiveFontSizes} from '@mui/material';
-import DeleteIcon  from '@mui/icons-material/Delete' ;
-import LogoutButton from './LogoutButton.tsx';
+// import LogoutButton from './LogoutButton.tsx';
+
+
 const App: React.FC = () => {
   return (
     <BrowserRouter>
@@ -25,111 +32,247 @@ const App: React.FC = () => {
 };
 
 
-const HomePage : React.FC = () =>{
+const HomePage: React.FC = () => {
   let theme = createTheme();
   theme = responsiveFontSizes(theme);
-    const navigate = useNavigate();
-    const [stocks , setStocks] = useState<Stock[]>([]);
-    const [addStock , setAddStock] = useState<Additem>({
-      symbol:" ",
-    });
-    const handleChange = (event : React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      console.log(event.target.value);
-      setAddStock({symbol:event.target.value });
+  // const navigate = useNavigate();
+  const [stocks, setStocks] = useState<Stock[]>([]);
+  const [addStock, setAddStock] = useState<Additem>(
+    {
+      symbol: "",
     }
-    const handleSubmit = (event : React.FormEvent<HTMLFormElement>) =>{
-      event.preventDefault();
-      const postRequest = async () => {
-        try{
-          console.log("DATA :",addStock);
-          const response = await api.post("http://127.0.0.1:8000/stock/",addStock);
-          const data = response.data;
-          if(data['status']=='failed'){
-            localStorage.setItem('message','Stock is already in your wishlist');
-            window.location.reload(); //to refresh the page to reflect addition of new stock in wishlist
+  );
 
-          }else{
-            console.log(data);
-            localStorage.setItem('message','');
-            window.location.reload(); //to refresh the page to reflect addition of new stock in wishlist
-          }
-        }catch(err){
-          localStorage.setItem('message','Stock is already in your wishlist');
-          console.log(err);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    console.log(event.target.value);
+    setAddStock({ symbol: event.target.value });
+  }
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const postRequest = async () => {
+      try {
+        // console.log("DATA :", addStock);
+        const response = await api.post("http://127.0.0.1:8000/stock/", addStock);
+        const data = response.data;
+        if (data['status'] == 'failed') {
+          alert('Stock is already in your wishlist');
+          // window.location.reload(); //to refresh the page to reflect addition of new stock in wishlist
+
+        } else {
+          // alert(data);
+          // console.log(data);
+          // localStorage.setItem('message','');
+          window.location.reload(); //to refresh the page to reflect addition of new stock in wishlist
         }
+      } catch (err) {
+        localStorage.setItem('message', 'Stock is already in your wishlist');
+        console.log(err);
       }
-      postRequest();
     }
+    postRequest();
+  }
 
-    //adding logout button's functionality
-      
-    useEffect(()=>{
-        const fetchdata = async ()=>{
-            try{
-                const response = await api.get("http://127.0.0.1:8000/stock/");
-                setStocks(response.data);
-                localStorage.setItem("authenticated","true");
-                localStorage.setItem('message','');
-            }catch(err){
-              localStorage.setItem("authenticated","false");
-              console.log("Error : ",err);
+  //adding logout button's functionality
+
+  useEffect(() => {
+    const fetchdata = async () => {
+      try {
+        const response = await api.get("http://127.0.0.1:8000/stock/");
+        setStocks(response.data);
+        localStorage.setItem("authenticated", "true");
+        localStorage.setItem('message', '');
+      } catch (err) {
+        localStorage.setItem("authenticated", "false");
+        console.log("Error : ", err);
+      }
+    }
+    fetchdata();
+  }, []);
+
+  return (
+    <div>
+      <LoginButton />
+      <AppBar >
+
+        <Box
+          sx={{
+            display: "flex",
+            p: 1,
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            height: '4rem',
+            [theme.breakpoints.down('sm')]: {
+              height: '2rem'
             }
-        }
-        fetchdata();
-    },[]);
-    
-    return (
-      <div>
-        <LoginButton />
-        <AppBar >
-            <Box  sx={{display:"flex" ,p:1,alignItems:'center',flexWrap:'wrap',justifyContent:'space-between'}}>
-              <ThemeProvider theme={theme}>
-              <Typography variant="h5" sx={{fontFamily:'Monospace',fontWeight:'bold',letterSpacing:2}}>Stock Wishlist dashboard</Typography>
-              </ThemeProvider>
-              <Box component="form"  onSubmit={handleSubmit} sx={{display:"flex" , alignItems:'center',padding:"4px 4px"}}>
-                <TextField size='small' id="filled-basic" variant='filled' sx={{backgroundColor:"white"}} label='Add Stock...' name="symbol" value={addStock.symbol} onChange={handleChange} type='text'/>
-                <Button type="submit" color="success"  variant="contained" sx={{margin:'0 12px'}} name='submit'>Submit
-                  {/* <ThemeProvider theme={theme}>
-                    <Typography sx={{fontSize:"calc(0.6rem+0.5vw)"}} component="span" display="inline">Submit</Typography>
-                  </ThemeProvider> */}
-                </Button>
-              </Box>
-              <LogoutButton />
+          }}>
+
+          <ThemeProvider theme={theme}>
+            <Box display={"flex"} alignItems={"center"}>
+              <Typography
+                variant="h4"
+                sx={{
+                  fontFamily: "Calibri, 'Trebuchet MS', sans-serif",
+                  fontWeight: 'bold',
+                  letterSpacing: 1,
+                  margin: "0 10px"
+                }}
+              >
+                Stock Wishlist dashboard
+              </Typography>
+
+              <TrendingUpIcon></TrendingUpIcon>
             </Box>
-        </AppBar>
-        <Container sx={{my:'15rem'}}>
-          <Grid container spacing={4}>{stocks.map(stock=>(
-            <Grid item xs={8} sm={10} md={8} lg={10} key={stock.symbol} sx={{margin:'auto'}} >
-              <Card 
-              sx={{borderRadius:'10px',border:1,borderColor:"grey.500",boxShadow:3}}>
-                <CardContent>
-                  <Box component="form" display={"flex"} justifyContent={"space-between"}
-                      onSubmit={ async ( event : React.FormEvent<HTMLFormElement>) => {
-                          event.preventDefault();
-                          const response = await api.post("http://127.0.0.1:8000/stock/delete",{"symbol":stock.symbol});
-                          console.log(response);
-                          window.location.reload();
-                      }}>
-                      <Typography variant="h5" component="h2" display={"inline"} >{stock.symbol}</Typography>
-                      <Button type="submit"  sx={{marginLeft:"40vw"}}>
-                        <DeleteIcon color='error' />
-                      </Button>
-                    </Box>
-                  <Typography sx={{color:"primary.main",}} variant="h5">Latest Price : ${stock.latest_value}</Typography>
-                  <Typography color="textSecondary" variant="h5">Change : {stock.change} 
-                    <Typography component="span" variant="h4" display={"inline"} sx={{color:"primary.main",mx:2}}>
-                          {(parseFloat(stock.change)>0)?(String.fromCharCode(8593)):String.fromCharCode(8595)}
-                    </Typography>
-                    
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-          </Grid>
-        </Container>
-      </div>
-    )
+
+          </ThemeProvider>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{
+              display: "flex",
+              alignItems: 'center',
+              padding: "8px 4px",
+              [theme.breakpoints.down('md')]: {
+                display: "none"
+              }
+            }}
+          >
+            <TextField
+              size='small'
+              id="outlined-size-small"
+              sx={{ borderBottom: "0" }}
+              InputProps={{
+                style: {
+                  backgroundColor: "white",
+                  borderRadius: "0",
+                  width: "20ch",
+                }
+              }}
+              label='Add Stock...'
+              variant="filled"
+              name="symbol"
+              value={addStock.symbol}
+              onChange={handleChange}
+              type='text'
+            />
+
+            <Button
+              type="submit"
+              color="success"
+              variant="contained"
+              sx={{ margin: '0 12px' }}
+              name='submit'
+            >
+              Submit
+            </Button>
+          </Box>
+          {/* <LogoutButton /> */}
+        </Box>
+
+      </AppBar>
+      <Container sx={{ my: '10rem' }}>
+        <Grid container spacing={4}>
+          {
+            stocks.map(
+              stock => (
+                <Grid item xs={10} sm={6} md={5} lg={4} key={stock.symbol} sx={{ margin: 'auto' }} >
+                  <Card
+                    sx={{ borderRadius: '10px', border: 1, borderColor: "grey.500", boxShadow: 3 }}>
+                    <CardContent
+                      sx={{
+                        [theme.breakpoints.down('md')]: {
+                          fontSize: '0.5em'
+                        }
+                      }}
+                    >
+                      <Box component="form" display={"flex"} justifyContent={"space-between"}
+                        onSubmit={
+                          async (event: React.FormEvent<HTMLFormElement>) => {
+                            event.preventDefault();
+                            const response = await api.post(
+                              "http://127.0.0.1:8000/stock/delete",
+                              { "symbol": stock.symbol }
+                            );
+                            // console.log(response);
+                            window.location.reload();
+                          }
+                        }>
+
+                        <Typography
+                          component="h2"
+                          display={"inline"}
+                          sx={{
+                            [theme.breakpoints.down('md')]: {
+                              fontSize: '2.5em'
+                            }
+                          }}
+                          variant="h5"
+                        >
+                          {stock.symbol}
+                        </Typography>
+
+                        <Button type="submit" sx={{
+                          padding: "0"
+                        }}>
+                          <DeleteIcon
+                            sx={{
+                              margin: "0",
+                              padding: "0"
+                            }}
+                            color='error'
+                            titleAccess='Delete Stock'
+                          />
+
+                        </Button>
+                      </Box>
+
+                      <Typography
+                        sx={{
+                          color: "primary.main",
+                          [theme.breakpoints.down('md')]: {
+                            fontSize: '2em'
+                          }
+                        }}
+                        variant="h6"
+                      >
+                        Latest Price : ${stock.latest_value}
+                      </Typography>
+
+                      <Typography
+                        color="textSecondary"
+                        variant="h6"
+                        sx={{
+                          [theme.breakpoints.down('md')]: {
+                            fontSize: '2em'
+                          }
+                        }}
+                      >
+                        Change : {parseFloat(stock.change).toFixed(3)}
+
+                        <Typography
+                          component="span"
+                          variant="h6"
+                          display={"inline"}
+                          sx={{ color: "primary.main", mx: 2 }}
+                        >
+                          {
+                            (parseFloat(stock.change) > 0) ?
+                              String.fromCharCode(8593) : String.fromCharCode(8595)
+                          }
+                        </Typography>
+
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              )
+            )
+          }
+        </Grid>
+      </Container>
+    </div>
+  )
 }
 
 export default App;
