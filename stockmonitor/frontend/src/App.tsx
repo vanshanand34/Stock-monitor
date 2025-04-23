@@ -4,7 +4,6 @@ import RegisterPage from './register.tsx';
 import LoginPage from './login.tsx';
 import LogoutPage from './Logout.tsx';
 import HomePage from './components/HomePage.tsx';
-// import LogoutButton from './LogoutButton.tsx';
 
 
 const App: React.FC = () => {

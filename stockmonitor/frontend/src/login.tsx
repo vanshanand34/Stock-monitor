@@ -68,6 +68,7 @@ const LoginPage: React.FC = () => {
                         sm: "2em 0",
                     },
                     boxShadow: "1px 1px 4px 1px rgba(0, 0, 0, 0.2)",
+                    outline: "1px solid rgba(73, 161, 255, 0.75)",
                 }}
                 variant="outlined"
             >
@@ -88,7 +89,9 @@ const LoginPage: React.FC = () => {
                             value={formData.username}
                             onChange={handleChange}
                             sx={{ mb: 4 }}
+                            color='success'
                             required
+
                         />
                     </Box>
                     <Box>
@@ -98,6 +101,7 @@ const LoginPage: React.FC = () => {
                             type="password"
                             value={formData.password}
                             onChange={handleChange}
+                            color="success"
                             required
                         ></TextField>
                     </Box>
