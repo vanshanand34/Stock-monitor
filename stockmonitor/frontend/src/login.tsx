@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Alert, Card } from '@mui/material';
-import { LoginForm } from './stock';
+import { LoginForm } from './interfaces/index.tsx';
 import { useNavigate } from 'react-router-dom';
+import ErrorDisplay from './components/ErrorDisplay.tsx';
 import api from './api.tsx';
 
 const LoginPage: React.FC = () => {
@@ -13,7 +14,7 @@ const LoginPage: React.FC = () => {
             username: ''
         }
     );
-    const [error, setError] = useState("");
+    const [errors, setErrors] = useState<string[]>([]);
 
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -29,19 +30,19 @@ const LoginPage: React.FC = () => {
             console.log(data);
 
             if (!data.status || !data['token']) {
-                setError("Invalid username or password");
+                setErrors(["Invalid username or password"]);
                 localStorage.setItem('authenticated', 'false');
                 return;
             }
 
-            setError("");
+            setErrors([]);
             localStorage.setItem('token', data['token']);
             localStorage.setItem('authenticated', "true");
             navigate('/')
 
         } catch (err) {
             console.error("Error : ", err);
-            setError(err);
+            setErrors([err]);
         }
     };
 
@@ -55,8 +56,8 @@ const LoginPage: React.FC = () => {
             }}
         >
 
-            <ErrorDisplay error={error} setError={setError} />
-            <Card
+            <ErrorDisplay errors={errors} setErrors={setErrors} />
+            <Box
                 sx={{
                     width: {
                         xs: '90%',
@@ -67,10 +68,7 @@ const LoginPage: React.FC = () => {
                     padding: {
                         sm: "2em 0",
                     },
-                    boxShadow: "1px 1px 4px 1px rgba(0, 0, 0, 0.2)",
-                    outline: "1px solid rgba(73, 161, 255, 0.75)",
                 }}
-                variant="outlined"
             >
                 <Box
                     component="form"
@@ -118,38 +116,10 @@ const LoginPage: React.FC = () => {
                         </Button>
                     </Box>
                 </Box>
-            </Card>
+            </Box>
         </div>
     )
 
-}
-
-const ErrorDisplay = (
-    { error, setError }:
-        { error: string, setError: (value: React.SetStateAction<string>) => void }
-): JSX.Element => {
-
-    return (
-        <Box
-            paddingY={2}
-            paddingX={2}
-            display={'flex'}
-            justifyContent={'end'}
-            width={'35vw'}
-            position={'fixed'}
-            right={'3em'}
-            top={'0em'}
-
-            sx={{
-                transform: error !== '' ? '' : 'translateX(200%)',
-                transition: 'transform 0.4s ease-in'
-            }}
-        >
-            <Alert variant="filled" severity="error" onClose={() => setError("")} sx={{ width: '100%' }}>
-                {error}
-            </Alert>
-        </Box>
-    )
 }
 
 
