@@ -5,7 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import DeleteStockModal from './DeleteStockModal.tsx';
 import api from '../api.tsx';
-import { Stock } from '../stock.tsx';
+import { Stock } from '../interfaces/index.tsx';
 
 const StockInfoCard = ({ stock }: { stock: Stock }) => {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);

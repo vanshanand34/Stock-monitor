@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Box, TextField, Button, ThemeProvider, Dialog, DialogActions, DialogContentText, DialogContent, DialogTitle } from '@mui/material';
-import { DeleteDialogProps } from '../stock.tsx';
+import { DeleteDialogProps } from '../interfaces/index.tsx';
 
 
 const DeleteStockModal = (props: DeleteDialogProps): JSX.Element => {

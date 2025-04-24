@@ -3,12 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { Box, TextField, Button } from '@mui/material';
 import { Typography, Container, Grid, Card, CardContent } from '@mui/material';
 import { createTheme, responsiveFontSizes } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 import LoginButton from '../LoginButton.tsx';
 import api from '../api.tsx';
-import { Stock, Additem } from '../stock.tsx';
+import { Stock, Additem, AddStockProps } from '../interfaces/index.tsx';
 import StockInfoCard from './StockInfoCard.tsx';
 import NavBar from './Navbar.tsx';
+import AddStockModal from './AddStockModal.tsx';
 
 
 const HomePage: React.FC = () => {
@@ -20,6 +22,7 @@ const HomePage: React.FC = () => {
             symbol: "",
         }
     );
+    const [isAddStockModalOpen, setIsAddStockModalOpen] = useState(false);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         console.log(event.target.value);
@@ -27,6 +30,8 @@ const HomePage: React.FC = () => {
     }
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+
+        setIsAddStockModalOpen(false);
         event.preventDefault();
         const postRequest = async () => {
             try {
@@ -72,9 +77,19 @@ const HomePage: React.FC = () => {
                         addStock={addStock}
                         handleChange={handleChange}
                         handleSubmit={handleSubmit}
-                    />} />
+                        showAddStockModal={() => setIsAddStockModalOpen(true)}
+                    />}
+            />
 
             {localStorage.getItem('token') ? <StockWishlist stocks={stocks} /> : <LoginButton />}
+            <AddStockModal
+                isOpen={isAddStockModalOpen}
+                handleChange={handleChange}
+                handleSubmit={handleSubmit}
+                addStock={addStock}
+                handleClose={() => setIsAddStockModalOpen(false)}
+                stocks={stocks}
+            />
 
         </div>
     )
@@ -119,58 +134,56 @@ const StockWishlist = ({ stocks }: { stocks: Stock[] }) => {
     )
 }
 
-const AddStockComponent =
-    (
-        { addStock, handleChange, handleSubmit }:
-            {
-                addStock: Additem,
-                handleChange: ((event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void), handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
-            }
-    ) => {
-        return (
-            <Box
-                component="form"
-                onSubmit={handleSubmit}
-                sx={{
-                    display: {
-                        xs: "none",
-                        md: "flex",
-                    },
-                    alignItems: 'center',
-                    padding: "8px 4px",
+const AddStockComponent: React.FC<AddStockProps> = (
+    { addStock, handleChange, handleSubmit, showAddStockModal }
+) => {
+    return (
+        <Box>
+        <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{
+                display: {
+                    xs: "none",
+                    md: "flex",
+                },
+                alignItems: 'center',
+                padding: "8px 4px",
+            }}
+        >
+            <TextField
+                size='small'
+                id="outlined-size-small"
+                sx={{ borderBottom: "0" }}
+                InputProps={{
+                    style: {
+                        backgroundColor: "white",
+                        borderRadius: "0.3em",
+                        width: "35ch",
+                    }
                 }}
-            >
-                <TextField
-                    size='small'
-                    id="outlined-size-small"
-                    sx={{ borderBottom: "0" }}
-                    InputProps={{
-                        style: {
-                            backgroundColor: "white",
-                            borderRadius: "0.3em",
-                            width: "35ch",
-                        }
-                    }}
-                    label='Add Stock...'
-                    variant="filled"
-                    name="symbol"
-                    value={addStock.symbol}
-                    onChange={handleChange}
-                    type='text'
-                    required
-                />
+                label='Add Stock...'
+                variant="filled"
+                name="symbol"
+                value={addStock.symbol}
+                onChange={handleChange}
+                type='text'
+                required
+            />
 
-                <Button
-                    type="submit"
-                    color="success"
-                    variant="contained"
-                    sx={{ margin: '0 12px' }}
-                    name='submit'
-                >
-                    Submit
-                </Button>
-            </Box>
-        )
-    }
+            <Button
+                type="submit"
+                color="success"
+                variant="contained"
+                sx={{ margin: '0 12px' }}
+                name='submit'
+            >
+                Submit
+            </Button>
+        </Box>
+        <Box px={2} onClick={showAddStockModal} ><AddIcon /></Box>
+        </Box>
+    )
+}
 
 

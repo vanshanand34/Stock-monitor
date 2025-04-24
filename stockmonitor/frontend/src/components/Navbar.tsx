@@ -16,7 +16,7 @@ const NavBar = ({ addStockComponent }: { addStockComponent: JSX.Element }) => {
                     alignItems: 'center',
                     flexWrap: 'wrap',
                     justifyContent: {
-                        xs: 'center',
+                        xs: 'space-between',
                         md: 'space-between',
                     },
                     height: {
