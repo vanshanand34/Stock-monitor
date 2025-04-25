@@ -3,6 +3,8 @@ import React from 'react';
 import { Box } from '@mui/material';
 import { AppBar, Typography } from '@mui/material';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import LogoutPage from '../Logout.tsx';
+import LogoutButton from '../Logout.tsx';
 
 
 const NavBar = ({ addStockComponent }: { addStockComponent: JSX.Element }) => {
@@ -42,22 +44,30 @@ const NavBar = ({ addStockComponent }: { addStockComponent: JSX.Element }) => {
                             fontFamily: "system-ui",
                             fontWeight: 'medium',
                             letterSpacing: 1,
-                            padding: "0 0.5em 0.2em 0.5em",
+                            padding: {
+                                xs: "0 0.5em 0.2em 0.5em",
+                            },
                             fontSize: {
-                                xs: '1.5em',
-                                sm: '1.4em',
-                                md: '1.5em'
+                                xs: '1.1em', sm: '1.4em', md: '1.5em'
                             },
                         }}
                     >
                         StockTrade
                     </Typography>
-
-                    <TrendingUpIcon />
+                    <Box
+                        sx={{
+                            padding: {
+                                fontSize: '0.1em'
+                            }
+                        }}
+                    >
+                        <TrendingUpIcon sx={{ fontSize: { xs: '1.1rem', md: '1.5rem' } }} />
+                    </Box>
                 </Box>
-                {addStockComponent}
-
-
+                <Box display={"flex"} alignItems={'center'} sx={{ gap: { sm: 1, md: 4 } }}>
+                    {addStockComponent}
+                    <LogoutButton />
+                </Box>
             </Box>
 
         </AppBar>
