@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Alert, Card } from '@mui/material';
 import { LoginForm } from './interfaces/index.tsx';
 import { useNavigate } from 'react-router-dom';
-import ErrorDisplay from './components/ErrorDisplay.tsx';
+import ErrorDisplay from './components/toast/ErrorDisplay.tsx';
 import api from './api.tsx';
 
 const LoginPage: React.FC = () => {

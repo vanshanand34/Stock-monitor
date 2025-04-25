@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Button, Card, CardContent, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import DeleteStockModal from './DeleteStockModal.tsx';
+import DeleteStockModal from './modals/DeleteStockModal.tsx';
 import api from '../api.tsx';
 import { Stock } from '../interfaces/index.tsx';
 

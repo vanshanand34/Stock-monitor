@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
-import { Box, TextField, Button, Dialog, DialogActions, DialogContentText, DialogContent, DialogTitle } from '@mui/material';
-import { AddStockModalProps } from '../interfaces/index';
+import { Box, TextField, Button, Dialog, DialogContentText, DialogContent, DialogTitle } from '@mui/material';
+import { AddStockModalProps } from '../../interfaces/index';
 
 
 const AddStockModal = (props: AddStockModalProps): JSX.Element => {
@@ -94,7 +94,7 @@ const AddStockModal = (props: AddStockModalProps): JSX.Element => {
                                 color: 'white',
                                 bgcolor: 'gray'
                             }}
-                            autoFocus>
+                        >
                             Close
                         </Button>
                     </Box>

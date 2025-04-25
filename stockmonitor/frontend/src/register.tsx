@@ -12,7 +12,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import ErrorDisplay from './components/ErrorDisplay.tsx';
+import ErrorDisplay from './components/toast/ErrorDisplay.tsx';
 
 const RegisterPage: React.FC = () => {
     const navigate = useNavigate()
