@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Box, TextField, Button } from '@mui/material';
+import { Box, TextField, Button, CircularProgress } from '@mui/material';
 import { Typography, Container, Grid, Card, CardContent } from '@mui/material';
 import { createTheme, responsiveFontSizes } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
@@ -17,11 +17,8 @@ const HomePage: React.FC = () => {
     let theme = createTheme();
     theme = responsiveFontSizes(theme);
     const [stocks, setStocks] = useState<Stock[]>([]);
-    const [addStock, setAddStock] = useState<Additem>(
-        {
-            symbol: "",
-        }
-    );
+    const [addStock, setAddStock] = useState<Additem>({ symbol: "" });
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isAddStockModalOpen, setIsAddStockModalOpen] = useState(false);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -42,7 +39,6 @@ const HomePage: React.FC = () => {
                     alert('Stock is already in your wishlist');
                     setAddStock({ symbol: "" });
                 } else {
-                    // refresh the page to reflect addition of new stock
                     window.location.reload();
                 }
             } catch (err) {
@@ -56,11 +52,13 @@ const HomePage: React.FC = () => {
 
     useEffect(() => {
         const fetchdata = async () => {
+            setIsLoading(true);
             try {
                 const response = await api.get("http://127.0.0.1:8000/stock/");
                 setStocks(response.data);
                 localStorage.setItem("authenticated", "true");
                 localStorage.setItem('message', '');
+                setIsLoading(false);
             } catch (err) {
                 localStorage.setItem("authenticated", "false");
                 console.log("Error : ", err);
@@ -74,6 +72,7 @@ const HomePage: React.FC = () => {
             <NavBar
                 addStockComponent={
                     <AddStockComponent
+                        stocks={stocks}
                         addStock={addStock}
                         handleChange={handleChange}
                         handleSubmit={handleSubmit}
@@ -81,7 +80,11 @@ const HomePage: React.FC = () => {
                     />}
             />
 
-            {localStorage.getItem('token') ? <StockWishlist stocks={stocks} /> : <LoginButton />}
+            {
+                localStorage.getItem('token') ?
+                    <StockWishlist stocks={stocks} isLoading={isLoading} /> :
+                    <LoginButton />
+            }
             <AddStockModal
                 isOpen={isAddStockModalOpen}
                 handleChange={handleChange}
@@ -97,7 +100,7 @@ const HomePage: React.FC = () => {
 
 export default HomePage;
 
-const StockWishlist = ({ stocks }: { stocks: Stock[] }) => {
+const StockWishlist = ({ stocks, isLoading }: { stocks: Stock[], isLoading: boolean }) => {
     return (
         <Container sx={{ py: '6rem', }}>
             <Typography
@@ -114,74 +117,102 @@ const StockWishlist = ({ stocks }: { stocks: Stock[] }) => {
                     }
                 }}
             > Your Stock Wishlists</Typography>
-            <Grid container spacing={4}>
-                {
-                    stocks.map(
-                        stock => (
-                            <Grid item
-                                xs={10} sm={6}
-                                md={5} lg={4}
-                                key={stock.symbol}
-                                sx={{ margin: 'auto' }}
-                            >
-                                <StockInfoCard stock={stock} />
-                            </Grid>
+
+            {isLoading ? <Box display={'flex'} justifyContent={'center'} width={'100%'} py={6}><CircularProgress /></Box> :
+                <Grid container spacing={4}>
+                    {
+                        stocks.map(
+                            stock => (
+                                <Grid item
+                                    xs={10} sm={6}
+                                    md={5} lg={4}
+                                    key={stock.symbol}
+                                    sx={{ margin: 'auto' }}
+                                >
+                                    <StockInfoCard stock={stock} />
+                                </Grid>
+                            )
                         )
-                    )
-                }
-            </Grid>
+                    }
+                </Grid>
+            }
         </Container>
     )
 }
 
 const AddStockComponent: React.FC<AddStockProps> = (
-    { addStock, handleChange, handleSubmit, showAddStockModal }
+    { stocks, addStock, handleChange, handleSubmit, showAddStockModal }
 ) => {
+
+    const [error, setError] = useState("");
+    const checkDuplicateStock = (): boolean => {
+        for (const stock of stocks) {
+            if (stock.symbol.trim() === addStock.symbol.trim()) {
+                setError('Stock already exists in your wishlist');
+                return true;
+            }
+        }
+        setError("");
+        return false;
+    }
+
+    useEffect(() => {
+        checkDuplicateStock();
+    }, [addStock]);
+
     return (
         <Box>
-        <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{
-                display: {
-                    xs: "none",
-                    md: "flex",
-                },
-                alignItems: 'center',
-                padding: "8px 4px",
-            }}
-        >
-            <TextField
-                size='small'
-                id="outlined-size-small"
-                sx={{ borderBottom: "0" }}
-                InputProps={{
-                    style: {
-                        backgroundColor: "white",
-                        borderRadius: "0.3em",
-                        width: "35ch",
-                    }
+            <Box
+                component="form"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    if (checkDuplicateStock()) {
+                        return;
+                    };
+                    handleSubmit(e);
                 }}
-                label='Add Stock...'
-                variant="filled"
-                name="symbol"
-                value={addStock.symbol}
-                onChange={handleChange}
-                type='text'
-                required
-            />
-
-            <Button
-                type="submit"
-                color="success"
-                variant="contained"
-                sx={{ margin: '0 12px' }}
-                name='submit'
+                sx={{
+                    display: {
+                        xs: "none",
+                        md: "flex",
+                    },
+                    alignItems: 'center',
+                    padding: "8px 4px",
+                }}
             >
-                Submit
-            </Button>
-        </Box>
-        <Box px={2} onClick={showAddStockModal} ><AddIcon /></Box>
+                <TextField
+                    size='small'
+                    id="outlined-size-small"
+                    sx={{ borderBottom: "0" }}
+                    InputProps={{
+                        style: {
+                            backgroundColor: "white",
+                            width: "35ch",
+                        }
+                    }}
+                    label={error.length == 0 ? 'Add Stock': error}
+                    variant="filled"
+                    name="symbol"
+                    value={addStock.symbol}
+                    onChange={handleChange}
+                    type='text'
+                    required
+                    error={error.length !== 0}
+                />
+
+                <Button
+                    type="submit"
+                    color="success"
+                    variant="contained"
+                    sx={{ margin: '0 12px' }}
+                    name='submit'
+                >
+                    Submit
+                </Button>
+            </Box>
+
+            {/* Icon to show modal for adding stock on smaller screens */}
+            <Box px={2} onClick={showAddStockModal} sx={{display:{ sm: 'block' , md: 'none'}}}><AddIcon /></Box>
         </Box>
     )
 }

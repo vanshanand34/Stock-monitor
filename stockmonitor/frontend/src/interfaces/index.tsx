@@ -44,6 +44,7 @@ export interface AddStockModalProps {
 
 
 export interface AddStockProps {
+    stocks: Stock[],
     addStock: Additem,
     handleChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
     handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void,
