@@ -112,10 +112,8 @@ class ListCreateWishlist(generics.ListCreateAPIView):
 
             if wishlist_count:
                 return formatted_response(
-                    {
-                        False,
-                        "The stock already exists in your wishlist !!!!!",
-                    }
+                    False,
+                    "The stock already exists in your wishlist",
                 )
 
             serializer.save()
