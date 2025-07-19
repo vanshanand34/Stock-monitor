@@ -1,8 +1,8 @@
 import React from 'react';
 import { Box, Button } from '@mui/material';
-import { LoginForm } from './interfaces/index.tsx';
+import { LoginForm } from '../interfaces/index.tsx';
 import { useNavigate } from 'react-router-dom';
-import api from './api.tsx';
+import api from '../api.tsx';
 
 
 const LogoutButton: React.FC = () => {
@@ -39,9 +39,21 @@ const LogoutButton: React.FC = () => {
                     alignItems="center"
                     justifyContent="center"
                 >
-                    <Button 
-                        size='small' type='submit' variant="contained" 
-                        sx={{ bgcolor: 'gray', fontSize: '0.7em' }}
+                    <Button
+                        type='submit' variant="contained"
+                        color="info"
+                        sx={{
+                            bgcolor: 'gray', fontSize: { xs: '0.7em', md: '0.8em', },
+                            fontFamily: 'sans-serif',
+                            textAlign: 'center',
+                            verticalAlign: 'center',
+                            width: {
+                                xs: '5em',
+                                sm: '6em',
+                                md: '7em',
+                                lg: '8em'
+                            }
+                        }}
                     >
                         Logout
                     </Button>

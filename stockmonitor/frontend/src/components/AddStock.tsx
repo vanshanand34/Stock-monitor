@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, TextField, Button, CircularProgress } from '@mui/material';
+import { Box, TextField, Button } from '@mui/material';
 import { AddStockProps } from '../interfaces/index.tsx';
 
 
@@ -24,8 +24,8 @@ const AddStockComponent: React.FC<AddStockProps> = (
     }, [addStock]);
 
     return (
-        <Box>
-            <Box
+        <Box fontFamily={'sans-serif'}>
+            {/* <Box
                 component="form"
                 onSubmit={(e) => {
                     e.preventDefault();
@@ -70,14 +70,30 @@ const AddStockComponent: React.FC<AddStockProps> = (
                     sx={{ margin: '0 12px' }}
                     name='submit'
                     size="small"
+                    disabled={error.length !== 0}
                 >
                     Submit
                 </Button>
-            </Box>
+            </Box> */}
 
             {/* Icon to show modal for adding stock on smaller screens */}
-            <Box px={2} onClick={showAddStockModal} sx={{ display: { sm: 'flex', md: 'none' } }}>
-                <Button variant='contained' color='success' size='small' sx={{ fontSize: '0.7rem' }}>
+            <Box px={2}
+                onClick={() => {
+                    console.log("clicked");
+                    showAddStockModal();
+                }}
+                sx={{
+                    // modified md: none to md: flex to show modal on smaller screens
+                }}
+            >
+                <Button
+                    variant='contained'
+                    color='success'
+                    sx={{
+                        fontSize: { xs: '0.7em', md: '0.8em' },
+                        fontWeight: 'semi-bold',
+                    }}
+                >
                     Add Stock
                 </Button>
             </Box>

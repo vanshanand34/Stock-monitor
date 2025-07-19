@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { Box, Button, Card, CardContent, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import DeleteStockModal from './modals/DeleteStockModal.tsx';
-import api from '../api.tsx';
-import { Stock } from '../interfaces/index.tsx';
+import DeleteStockModal from '../modals/DeleteStockModal.tsx';
+import api from '../../api.tsx';
+import { Stock } from '../../interfaces/index.tsx';
 
 const StockInfoCard = ({ stock }: { stock: Stock }) => {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -17,6 +17,7 @@ const StockInfoCard = ({ stock }: { stock: Stock }) => {
             "http://127.0.0.1:8000/stock/delete",
             { "symbol": stock.symbol }
         );
+        console.log(response);
         window.location.reload();
     }
 

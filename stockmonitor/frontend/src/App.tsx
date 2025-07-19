@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import RegisterPage from './register.tsx';
 import LoginPage from './login.tsx';
-import LogoutPage from './Logout.tsx';
-import HomePage from './components/HomePage.tsx';
+import LogoutPage from './pages/Logout.tsx';
+import HomePage from './pages/HomePage.tsx';
 
 
 const App: React.FC = () => {

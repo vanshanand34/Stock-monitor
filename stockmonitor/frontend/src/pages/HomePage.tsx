@@ -1,22 +1,18 @@
 import React, { useEffect, useState } from 'react';
 
-import { Box, TextField, Button, CircularProgress } from '@mui/material';
-import { Typography, Container, Grid, Card, CardContent } from '@mui/material';
-import { createTheme, responsiveFontSizes } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
+import { Box, CircularProgress, Typography, Container, Grid } from '@mui/material';
 
-import LoginButton from '../LoginButton.tsx';
+import LoginButton from './LoginButton.tsx';
 import api from '../api.tsx';
-import { Stock, Additem, AddStockProps } from '../interfaces/index.tsx';
-import StockInfoCard from './StockInfoCard.tsx';
-import NavBar from './Navbar.tsx';
-import AddStockModal from './modals/AddStockModal.tsx';
-import AddStockComponent from './AddStockTop.tsx';
+import { Stock, Additem } from '../interfaces/index.tsx';
+import StockInfoCard from '../components/card-view/StockInfoCard.tsx';
+import NavBar from '../components/Navbar.tsx';
+import AddStockModal from '../components/modals/AddStockModal.tsx';
+import AddStockComponent from '../components/AddStock.tsx';
+import BasicTable from '../components/table-view/StockTable.tsx';
 
 
 const HomePage: React.FC = () => {
-    let theme = createTheme();
-    theme = responsiveFontSizes(theme);
     const [stocks, setStocks] = useState<Stock[]>([]);
     const [addStock, setAddStock] = useState<Additem>({ symbol: "" });
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -83,7 +79,10 @@ const HomePage: React.FC = () => {
 
             {
                 localStorage.getItem('token') ?
-                    <StockWishlist stocks={stocks} isLoading={isLoading} /> :
+                    <Box>
+                        <StockWishlist stocks={stocks} isLoading={isLoading} />
+                        <Box sx={{ py: 4 }} ><BasicTable rows={stocks} /></Box>
+                    </Box> :
                     <LoginButton />
             }
             <AddStockModal
@@ -105,11 +104,11 @@ const StockWishlist = ({ stocks, isLoading }: { stocks: Stock[], isLoading: bool
     return (
         <Container sx={{ py: '6rem', }}>
             <Typography
-                fontFamily={'system-ui'}
+                fontFamily={'sans-serif'}
                 textAlign={'center'}
                 py={4}
                 pb={6}
-                color="rgb(0, 0, 0)"
+                color="rgba(26, 26, 26, 1)"
                 sx={{
                     fontSize: {
                         xs: '2em',
@@ -119,23 +118,30 @@ const StockWishlist = ({ stocks, isLoading }: { stocks: Stock[], isLoading: bool
                 }}
             > Your Stock Wishlists</Typography>
 
-            {isLoading ? <Box display={'flex'} justifyContent={'center'} width={'100%'} py={6}><CircularProgress /></Box> :
-                <Grid container spacing={4}>
-                    {
-                        stocks.map(
-                            stock => (
-                                <Grid item
-                                    xs={10} sm={6}
-                                    md={5} lg={4}
-                                    key={stock.symbol}
-                                    sx={{ margin: 'auto' }}
-                                >
-                                    <StockInfoCard stock={stock} />
-                                </Grid>
+            {
+                isLoading ?
+
+                    <Box display={'flex'} justifyContent={'center'} width={'100%'} py={6}>
+                        <CircularProgress />
+                    </Box>
+                    :
+
+                    <Grid container spacing={4}>
+                        {
+                            stocks.map(
+                                stock => (
+                                    <Grid item
+                                        xs={10} sm={6}
+                                        md={5} lg={4}
+                                        key={stock.symbol}
+                                        sx={{ margin: 'auto' }}
+                                    >
+                                        <StockInfoCard stock={stock} />
+                                    </Grid>
+                                )
                             )
-                        )
-                    }
-                </Grid>
+                        }
+                    </Grid>
             }
         </Container>
     )
