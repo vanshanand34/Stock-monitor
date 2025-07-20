@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Alert, Card } from '@mui/material';
-import { LoginForm } from '../interfaces/index.tsx';
+import { LoginForm } from '../../interfaces/index.tsx';
 import { useNavigate } from 'react-router-dom';
-import api from '../api.tsx';
+import api from '../../api.tsx';
 
 const ErrorDisplay = (
     { errors, setErrors }:

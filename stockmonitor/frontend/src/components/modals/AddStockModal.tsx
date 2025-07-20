@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 import { Box, TextField, Button, Dialog, DialogContentText, DialogContent, DialogTitle } from '@mui/material';
 import { AddStockModalProps } from '../../interfaces/index';
@@ -8,7 +8,7 @@ const AddStockModal = (props: AddStockModalProps): JSX.Element => {
 
     const [error, setError] = useState("");
 
-    const checkDuplicateStock = (): boolean => {
+    const checkDuplicateStock = useCallback((): boolean => {
         for (const stock of props.stocks) {
             if (stock.symbol.trim() === props.addStock.symbol.trim()) {
                 setError('Stock already exists in your wishlist');
@@ -17,11 +17,11 @@ const AddStockModal = (props: AddStockModalProps): JSX.Element => {
         }
         setError("");
         return false;
-    }
+    }, [props.stocks, props.addStock]);
 
     useEffect(() => {
         checkDuplicateStock();
-    }, [props.addStock]);
+    }, [props.addStock, checkDuplicateStock]);
 
 
     return (
@@ -30,17 +30,27 @@ const AddStockModal = (props: AddStockModalProps): JSX.Element => {
             onClose={props.handleClose}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
-            sx={{
-                display: {
-                    sm: "block",
-                    md: "none",
-                },
-            }}
+            sx={{}}
         >
-            <DialogTitle id="alert-dialog-title" sx={{ paddingX: '2em', paddingY: '1em' }} fontWeight={600}>
+            <DialogTitle id="alert-dialog-title" sx={{ paddingX: '2em', paddingY: '1em', textAlign: 'center' }} fontWeight={600}>
                 Add Stock to wishlist
             </DialogTitle>
-            <DialogContent sx={{ marginX: '1em' }}>
+            <DialogContent sx=
+                {{
+                    marginX: '1em',
+                    // minWidth: {
+                    //     xs: '15em',
+                    //     md: '20em'
+                    // }
+                    width: {
+                        xs: '15em',
+                        md: '18em'
+                    },
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center'
+                }}
+            >
                 <DialogContentText
                     id="alert-dialog-description"
                     sx={{
@@ -60,6 +70,7 @@ const AddStockModal = (props: AddStockModalProps): JSX.Element => {
                                 return;
                             };
                             props.handleSubmit(e);
+                            props.handleClose();
                         }
                     }>
                     <TextField
@@ -69,7 +80,6 @@ const AddStockModal = (props: AddStockModalProps): JSX.Element => {
                             style: {
                                 backgroundColor: "white",
                                 borderRadius: "0.3em",
-                                width: "25ch",
                             }
                         }}
                         label='Add Stock'
@@ -79,14 +89,23 @@ const AddStockModal = (props: AddStockModalProps): JSX.Element => {
                         onChange={props.handleChange}
                         type='text'
                         sx={{
-                            marginY: '1em'
+                            marginY: '1em',
+                            width: {
+                                xs: "25ch",
+                                md: "30ch",
+                            },
                         }}
                         helperText={error}
                         error={error ? true : false}
                         required
                     />
                     <Box display={'flex'} justifyContent={'center'} gap={'1em'} py={2}>
-                        <Button type='submit' variant='contained' color='success'>Submit</Button>
+                        <Button
+                            type='submit'
+                            variant='contained'
+                            color='success'
+                            disabled={error.length !== 0}
+                        >Submit</Button>
                         <Button
                             variant='contained'
                             onClick={props.handleClose}
